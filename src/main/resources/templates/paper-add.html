@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<hr class="my-5">
+
+<div class="col-md-7 col-lg-8">
+    <h4 class="mb-3">New paper</h4>
+    <form class="needs-validation" novalidate="" action="/paper/add" method="post">
+
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="" value="" required="">
+                <div class="invalid-feedback">
+                    Input name of paper.
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="ticker" class="form-label">Ticker</label>
+                <input type="text" class="form-control" id="ticker" name="ticker" placeholder="" value="" required="">
+                <div class="invalid-feedback">
+                    Input ticker.
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="type" class="form-label">Type</label>
+                <select class="form-select" id="type" name="type" required="">
+                    <div th:each="el : ${types}" class="alert alert-info mt-2">
+                        <option th:text="${el.name()}"></option>
+                    </div>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a valid type.
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="currency" class="form-label">Currency</label>
+                <select class="form-select" id="currency" name="currency" required="">
+                    <div th:each="el : ${currency}" class="alert alert-info mt-2">
+                        <option th:text="${el.name()}"></option>
+                    </div>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a valid currency.
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label for="purchasePrice" class="form-label">Purchase price</label>
+                <input type="number" class="form-control" id="purchasePrice" name="purchasePrice" placeholder="" required="">
+                <div class="invalid-feedback">
+                    Purchase price
+                </div>
+            </div>
+
+            <div class="col-md-6">
+            <label for="purchaseDate" class="form-label">Purchase date</label>
+            <input type="datetime-local" class="form-control" id="purchaseDate" name="purchaseDateStr" placeholder="" required="">
+            <div class="invalid-feedback">
+                Purchase date
+            </div>
+        </div>
+
+        </div>
+
+        <hr class="my-4">
+
+        <button class="w-100 btn btn-primary btn-lg" type="submit">Add</button>
+    </form>
+</div>
+</body>
+</html>
