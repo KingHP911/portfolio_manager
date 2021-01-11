@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+    <body>
+        <header th:insert="blocks/header :: header"></header>
+        <hr class="my-4">
+
+        <div class="container mt-5">
+            <div th:each="el : ${paper}" class="alert alert-info mt-2">
+                <h1 th:text="${el.getName()}"></h1>
+                <p th:text="${el.getTicker()}"></p>
+                <p th:text="${el.getType()}"></p>
+                <p th:text="${el.getCurrency()}"></p>
+                <p th:text="${el.getPurchasePrice()}"></p>
+                <p th:text="${el.getPurchaseDate()}"></p>
+                <p th:text="${el.getCurrentPrice()}"></p>
+                <a th:href="@{/paper/{id}/edit(id=${el.getId()})}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                <form th:action="@{/paper/{id}/remove(id=${el.getId()})}" method="post">
+                    <button class="btn btn-sm btn-outline-secondary" type="submit">Remove</button>
+                </form>
+            </div>
+        </div>
+</body>
+</html>
