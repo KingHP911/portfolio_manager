@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<hr class="my-4">
+
+<div class="container mt-5">
+    <div class="alert alert-info mt-2">
+        <h1 th:text="${portfolio.getName()}"></h1>
+
+
+<!--        <a th:href="@{/paper/{id}/edit(id=${el.getId()})}" class="btn btn-sm btn-outline-secondary">Edit</a>-->
+<!--        <form th:action="@{/paper/{id}/remove(id=${el.getId()})}" method="post">-->
+<!--            <button class="btn btn-sm btn-outline-secondary" type="submit">Remove</button>-->
+<!--        </form>-->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Papers</h1>
+        </div>
+
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="el : ${papers}">
+                <td th:text="${el.getName()}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+<!--        <div>-->
+<!--            <select class="form-select" name="paper" required="" placeholder="Input type.">-->
+<!--                <div th:each="paper : ${allPapers}" class="alert alert-info mt-2">-->
+<!--                    <option th:text="${paper.getName()}" th:value="${paper.getId()}"></option>-->
+<!--                </div>-->
+<!--            </select>-->
+
+<!--            <form th:action="@{/portfolio/{id}/addpapaer(id_port=${portfolio.getId()}, id_paper=${})}" method="post">-->
+<!--                <button class="btn btn-sm btn-outline-secondary" type="submit">Remove</button>-->
+<!--            </form>-->
+
+<!--        </div>-->
+
+        <form th:action="@{/portfolio/{id}/addpapaer(id=${portfolio.getId()})}" method="post">
+            <select class="form-control" id="addingPaperId" name="addingPaperId">
+                <option value="">Select paper</option>
+                <option th:each="paper : ${allPapers}"
+                        th:value="${paper.getId()}"
+                        th:text="${paper.getName()}">
+                </option>
+            </select>
+            <br>
+            <button class="btn btn-sm btn-outline-secondary" type="submit">Add</button>
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

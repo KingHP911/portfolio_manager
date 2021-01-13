@@ -2,12 +2,10 @@ package ru.kinghp.portfolio_manager.models;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Data
@@ -24,6 +22,12 @@ public class Paper {
     BigDecimal purchasePrice, currentPrice;
     LocalDateTime purchaseDate;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "paper_portfolio",
+            joinColumns = @JoinColumn(name = "paper_id"),
+            inverseJoinColumns = @JoinColumn(name = "portfolio_id"))
+    List<Portfolio> portfolios;
+
     public Paper(String name, String ticker, TypesOfPaper type, CurrencyOfPaper currency, BigDecimal purchasePrice, LocalDateTime purchaseDate) {
         this.name = name;
         this.ticker = ticker;
@@ -34,5 +38,15 @@ public class Paper {
     }
 
     public Paper() {
+    }
+
+    public void addPortfolio(Portfolio portfolio){
+        this.portfolios.add(portfolio);
+        portfolio.getPapers().add(this);
+    }
+
+    public void removePortfolio(Portfolio portfolio){
+        this.portfolios.remove(portfolio);
+        portfolio.getPapers().remove(this);
     }
 }

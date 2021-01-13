@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<hr class="my-4">
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Portfolios</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.location.href = '/portfolio/add';">+ Add</button>
+        </div>
+    </div>
+</div>
+<table class="table table-striped table-sm">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>View</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="el : ${portfolios}">
+        <td th:text="${el.getName()}"></td>
+        <td>
+            <a th:href="@{/portfolio/{id}(id=${el.getId()})}">view</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
