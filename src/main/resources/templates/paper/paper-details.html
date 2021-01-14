@@ -19,9 +19,11 @@
                 <p th:text="${el.getPurchaseDate()}"></p>
                 <p th:text="${el.getCurrentPrice()}"></p>
                 <a th:href="@{/paper/{id}/edit(id=${el.getId()})}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                <form th:action="@{/paper/{id}/remove(id=${el.getId()})}" method="post">
-                    <button class="btn btn-sm btn-outline-secondary" type="submit">Remove</button>
-                </form>
+                <p>
+                    <form th:action="@{/paper/{id}/remove(id=${el.getId()})}" method="post">
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">Remove</button>
+                    </form>
+                </p>
             </div>
         </div>
 </body>

@@ -37,6 +37,7 @@
             </tbody>
         </table>
 
+        <h5 class="h5">Adding paper</h5>
         <form th:action="@{/portfolio/{id}/addPaper(id=${portfolio.getId()})}" method="post">
             <select class="form-control" id="addingPaperId" name="addingPaperId">
                 <option value="">Select paper</option>
