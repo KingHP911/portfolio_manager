@@ -21,16 +21,23 @@
             <thead>
             <tr>
                 <th>Name</th>
+                <th>Remove</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="el : ${papers}">
                 <td th:text="${el.getName()}"></td>
+                <td>
+                    <form th:action="@{/portfolio/{id}/removePaper(id=${portfolio.getId()})}" method="post">
+                        <input type="hidden" name="removingPaperId" id="removingPaperId" th:value="${el.getId()}"/>
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">Remove</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
 
-        <form th:action="@{/portfolio/{id}/addpapaer(id=${portfolio.getId()})}" method="post">
+        <form th:action="@{/portfolio/{id}/addPaper(id=${portfolio.getId()})}" method="post">
             <select class="form-control" id="addingPaperId" name="addingPaperId">
                 <option value="">Select paper</option>
                 <option th:each="paper : ${allPapers}"

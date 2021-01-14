@@ -1,5 +1,6 @@
 package ru.kinghp.portfolio_manager.controllers;
 
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +20,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class PortfolioController {
@@ -157,6 +160,7 @@ public class PortfolioController {
     @GetMapping("/portfolio/{id}")
     public String portfolio(@PathVariable("id") Long id, Model model){
 
+        //todo валидация форм
         if (!portfolioRepository.existsById(id)){
             return "redirect:/portfolios";
         }
@@ -168,19 +172,23 @@ public class PortfolioController {
             return "redirect:/portfolios";
         }
         model.addAttribute("portfolio", res.get(0));
-        model.addAttribute("papers", res.get(0).getPapers());
+        Set<Paper> papersInPort = res.get(0).getPapers();
+        model.addAttribute("papers", papersInPort);
 
         Iterable<Paper> allPapers = paperRepository.findAll();
-        model.addAttribute("allPapers", allPapers);
+        Set<Paper> paperForAdding = new HashSet<>();
+        allPapers.forEach(paperForAdding::add);
+        paperForAdding.removeAll(papersInPort);
+        model.addAttribute("allPapers", paperForAdding);
 
         return "portfolio/portfolio-details";
     }
 
-    @PostMapping("/portfolio/{id}/addpapaer")
+    @PostMapping("/portfolio/{id}/addPaper")
     public String portfolioPostAddPaper (@PathVariable("id") Long id, @Validated Long addingPaperId, Model model){
 
         if (!paperRepository.existsById(addingPaperId)){
-            return portfolio(id, model);
+            return "redirect:/portfolio/{id}";
         }
 
         if (!portfolioRepository.existsById(id)){
@@ -191,10 +199,33 @@ public class PortfolioController {
         Portfolio portfolio = portfolioRepository.findById(id).orElseThrow();
         paper.addPortfolio(portfolio);
 
+        //todo понять как правильно
         portfolioRepository.save(portfolio);
         paperRepository.save(paper);
 
-        return portfolio(id, model);
+        return "redirect:/portfolio/{id}";
+    }
+
+    @PostMapping("/portfolio/{id}/removePaper")
+    public String portfolioPostRemovePaper (@PathVariable("id") Long id, @Validated Long removingPaperId, Model model){
+
+        if (!paperRepository.existsById(removingPaperId)){
+            return "redirect:/portfolio/{id}";
+        }
+
+        if (!portfolioRepository.existsById(id)){
+            return "redirect:/portfolios";
+        }
+
+        Paper paper = paperRepository.findById(removingPaperId).orElseThrow();
+        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow();
+        paper.removePortfolio(portfolio);
+
+        portfolioRepository.save(portfolio);
+        paperRepository.save(paper);
+
+//        return portfolio(id, model);
+        return "redirect:/portfolio/{id}";
     }
 
 }
