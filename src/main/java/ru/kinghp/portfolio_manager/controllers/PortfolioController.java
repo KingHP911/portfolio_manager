@@ -44,8 +44,8 @@ public class PortfolioController {
     @GetMapping("/paper/add")
     public String paperAdd (@ModelAttribute("paper") Paper paper, Model model){
         //model.addAttribute("paper", new Paper()); эквиваленитно @ModelAttribute("paper") Paper paper с model в аргументе newPaper()
-        model.addAttribute("types", TypesOfPaper.values());
-        model.addAttribute("currency", CurrencyOfPaper.values());
+        model.addAttribute("types", PaperTypes.values());
+        model.addAttribute("currency", PaperCurrency.values());
         return "paper/paper-add";
     }
 
@@ -58,8 +58,8 @@ public class PortfolioController {
 
         //todo получать тек цену?
         if (bindingResult.hasErrors()){
-            model.addAttribute("types", TypesOfPaper.values());
-            model.addAttribute("currency", CurrencyOfPaper.values());
+            model.addAttribute("types", PaperTypes.values());
+            model.addAttribute("currency", PaperCurrency.values());
             return "paper/paper-add";
         }
 
@@ -96,14 +96,14 @@ public class PortfolioController {
         ArrayList<Paper> res = new ArrayList<>();
         paper.ifPresent(res::add);
         model.addAttribute("paper", res);
-        model.addAttribute("types", TypesOfPaper.values());
-        model.addAttribute("currency", CurrencyOfPaper.values());
+        model.addAttribute("types", PaperTypes.values());
+        model.addAttribute("currency", PaperCurrency.values());
         return "paper/paper-edit";
     }
 
     @PostMapping("/paper/{id}/edit")
     public String paperPostUpdate (@RequestParam String name, @RequestParam String ticker,
-                                @RequestParam TypesOfPaper type, @RequestParam CurrencyOfPaper currency,
+                                   @RequestParam PaperTypes type, @RequestParam PaperCurrency currency,
                                    @PathVariable("id") Long id, Model model){
 
 

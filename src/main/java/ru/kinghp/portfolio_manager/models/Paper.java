@@ -15,9 +15,11 @@ public class Paper {
     Long id;
 
     @NotBlank
-    String name, ticker;
-    TypesOfPaper type;
-    CurrencyOfPaper currency;
+    String name;
+    @NotBlank
+    String ticker;
+    PaperTypes type;
+    PaperCurrency currency;
     BigDecimal currentPrice;
 
 }

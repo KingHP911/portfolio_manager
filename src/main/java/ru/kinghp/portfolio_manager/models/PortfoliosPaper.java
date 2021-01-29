@@ -22,7 +22,8 @@ public class PortfoliosPaper{
     @ManyToOne(fetch = FetchType.LAZY)
     Paper paper;
 
-    BigDecimal purchasePrice, currentPrice;
+    BigDecimal currentPrice;
+    BigDecimal purchasePrice;
     LocalDateTime purchaseDate;
     Integer vol;
 

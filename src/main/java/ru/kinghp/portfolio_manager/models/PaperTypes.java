@@ -1,6 +1,6 @@
 package ru.kinghp.portfolio_manager.models;
 
-public enum TypesOfPaper {
+public enum PaperTypes {
     STOCK,
     BOUNDS,
     ETF
