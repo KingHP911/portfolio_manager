@@ -1,10 +1,11 @@
 package ru.kinghp.portfolio_manager.models;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
-import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -15,8 +16,8 @@ public class Portfolio {
     Long id;
     String name;
 
-    @ManyToMany(mappedBy = "portfolios")
-    Set<Paper> papers;
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PortfoliosPaper> papers = new ArrayList<>();
 
     public Portfolio() {
     }
@@ -24,4 +25,15 @@ public class Portfolio {
     public Portfolio(String name) {
         this.name = name;
     }
+
+
+    public void addPaper(PortfoliosPaper paper){
+        this.papers.add(paper);
+        paper.setPortfolio(this);
+    }
+    public void removePaper(PortfoliosPaper paper){
+        this.papers.remove(paper);
+        paper.setPortfolio(null);
+    }
+
 }

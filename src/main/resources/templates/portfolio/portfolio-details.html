@@ -21,12 +21,20 @@
             <thead>
             <tr>
                 <th>Name</th>
+                <th>Ticker</th>
+                <th>Volume</th>
+                <th>Purchase Date</th>
+                <th>Purchase Price</th>
                 <th>Remove</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="el : ${papers}">
                 <td th:text="${el.getName()}"></td>
+                <td th:text="${el.getPaper().getTicker()}"></td>
+                <td th:text="${el.getVol()}"></td>
+                <td th:text="${el.getPurchaseDate()}"></td>
+                <td th:text="${el.getPurchasePrice()}"></td>
                 <td>
                     <form th:action="@{/portfolio/{id}/removePaper(id=${portfolio.getId()})}" method="post">
                         <input type="hidden" name="removingPaperId" id="removingPaperId" th:value="${el.getId()}"/>
@@ -46,6 +54,8 @@
                         th:text="${paper.getName()}">
                 </option>
             </select>
+            <br>
+            <input type="number" step=0.01 name="vol" placeholder="Input volume." class="form-control">
             <br>
             <button class="btn btn-sm btn-outline-secondary" type="submit">Add</button>
         </form>

@@ -1,72 +1,71 @@
 package ru.kinghp.portfolio_manager.controllers;
 
-import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.kinghp.portfolio_manager.dao.PortfolioRepository;
-import ru.kinghp.portfolio_manager.models.CurrencyOfPaper;
-import ru.kinghp.portfolio_manager.models.Paper;
-import ru.kinghp.portfolio_manager.models.Portfolio;
-import ru.kinghp.portfolio_manager.models.TypesOfPaper;
+import ru.kinghp.portfolio_manager.dao.PortfoliosPaperRepository;
+import ru.kinghp.portfolio_manager.models.*;
 import ru.kinghp.portfolio_manager.dao.PaperRepository;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class PortfolioController {
 
     @Autowired
     private PaperRepository paperRepository;
-
     @Autowired
     private PortfolioRepository portfolioRepository;
+    @Autowired
+    private PortfoliosPaperRepository portfoliosPaperRepository;
+    @Autowired
+    private FinnHubData hubData;
 
     @GetMapping("/")
     public String users (Model model){
-
         return "index";
     }
 
     @GetMapping("/papers")
     public String papers (Model model){
         Iterable<Paper> papers = paperRepository.findAll();
+        //todo переписать hubData.getCurrentPrice(paper.getTicker()) на пакетное получение, тек реализация очень медлено получает тек цены
         model.addAttribute("papers", papers);
         return "paper/papers";
     }
 
     @GetMapping("/paper/add")
-    public String paperAdd (Model model){
+    public String paperAdd (@ModelAttribute("paper") Paper paper, Model model){
+        //model.addAttribute("paper", new Paper()); эквиваленитно @ModelAttribute("paper") Paper paper с model в аргументе newPaper()
         model.addAttribute("types", TypesOfPaper.values());
         model.addAttribute("currency", CurrencyOfPaper.values());
         return "paper/paper-add";
     }
 
     @PostMapping("/paper/add")
-    public String paperPostAdd (@RequestParam String name, @RequestParam String ticker,
-                                @RequestParam TypesOfPaper type, @RequestParam CurrencyOfPaper currency,
-                                @RequestParam BigDecimal purchasePrice, @RequestParam String purchaseDateStr,
-                                Model model){
+    public String paperPostAdd (@ModelAttribute("paper") @Valid Paper paper,
+                                BindingResult bindingResult, Model model){
 
+        //@Valid проверяет корректность значений
+        //BindingResult bindingResult ошибка валидации. Должен быть после валидир-го объекта
 
-        LocalDateTime purchaseDate = LocalDateTime.now();
-        try {
-            purchaseDate = LocalDateTime.parse(purchaseDateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        }catch (Exception e){
-
+        //todo получать тек цену?
+        if (bindingResult.hasErrors()){
+            model.addAttribute("types", TypesOfPaper.values());
+            model.addAttribute("currency", CurrencyOfPaper.values());
+            return "paper/paper-add";
         }
-        Paper paper = new Paper(name, ticker, type, currency, purchasePrice, purchaseDate);
+
+        //todo не добавлять бумаги с уже имеющимися тикерами
+
+        paper.setCurrentPrice(new BigDecimal(0));
         paperRepository.save(paper);
         return "redirect:/papers";
     }
@@ -81,6 +80,7 @@ public class PortfolioController {
         Optional<Paper> paper = paperRepository.findById(id);
         ArrayList<Paper> res = new ArrayList<>();
         paper.ifPresent(res::add);
+        //todo получать тек цены
         model.addAttribute("paper", res);
         return "paper/paper-details";
     }
@@ -104,24 +104,14 @@ public class PortfolioController {
     @PostMapping("/paper/{id}/edit")
     public String paperPostUpdate (@RequestParam String name, @RequestParam String ticker,
                                 @RequestParam TypesOfPaper type, @RequestParam CurrencyOfPaper currency,
-                                @RequestParam BigDecimal purchasePrice, @RequestParam String purchaseDateStr,
                                    @PathVariable("id") Long id, Model model){
 
-
-        LocalDateTime purchaseDate = LocalDateTime.now();
-        try {
-            purchaseDate = LocalDateTime.parse(purchaseDateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        }catch (Exception e){
-
-        }
 
         Paper paper = paperRepository.findById(id).orElseThrow();
         paper.setName(name);
         paper.setTicker(ticker);
         paper.setType(type);
         paper.setCurrency(currency);
-        paper.setPurchasePrice(purchasePrice);
-        paper.setPurchaseDate(purchaseDate);
 
         paperRepository.save(paper);
         return "redirect:/papers";
@@ -165,27 +155,21 @@ public class PortfolioController {
             return "redirect:/portfolios";
         }
 
-        Optional<Portfolio> portfolio = portfolioRepository.findById(id);
-        ArrayList<Portfolio> res = new ArrayList<>();
-        portfolio.ifPresent(res::add);
-        if (res.isEmpty()){
-            return "redirect:/portfolios";
-        }
-        model.addAttribute("portfolio", res.get(0));
-        Set<Paper> papersInPort = res.get(0).getPapers();
+        Portfolio portfolio = portfolioRepository.findById(id).get();
+        model.addAttribute("portfolio", portfolio);
+
+        List<PortfoliosPaper> papersInPort = portfolio.getPapers();
         model.addAttribute("papers", papersInPort);
 
         Iterable<Paper> allPapers = paperRepository.findAll();
-        Set<Paper> paperForAdding = new HashSet<>();
-        allPapers.forEach(paperForAdding::add);
-        paperForAdding.removeAll(papersInPort);
-        model.addAttribute("allPapers", paperForAdding);
+        model.addAttribute("allPapers", allPapers);
 
         return "portfolio/portfolio-details";
     }
 
     @PostMapping("/portfolio/{id}/addPaper")
-    public String portfolioPostAddPaper (@PathVariable("id") Long id, @Validated Long addingPaperId, Model model){
+    public String portfolioPostAddPaper (@PathVariable("id") Long id, @Validated Long addingPaperId,
+                                         @RequestParam Integer vol, Model model){
 
         if (!paperRepository.existsById(addingPaperId)){
             return "redirect:/portfolio/{id}";
@@ -195,13 +179,13 @@ public class PortfolioController {
             return "redirect:/portfolios";
         }
 
-        Paper paper = paperRepository.findById(addingPaperId).orElseThrow();
-        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow();
-        paper.addPortfolio(portfolio);
+        Paper paper = paperRepository.findById(addingPaperId).get();
+        Portfolio portfolio = portfolioRepository.findById(id).get();
+        PortfoliosPaper portfoliosPaper = new PortfoliosPaper(paper, new BigDecimal(0), LocalDateTime.now(), vol);
+        portfoliosPaper.setPurchasePrice(hubData.getCurrentPrice(paper.getTicker()));
+        portfolio.addPaper(portfoliosPaper);
 
-        //todo понять как правильно
         portfolioRepository.save(portfolio);
-        paperRepository.save(paper);
 
         return "redirect:/portfolio/{id}";
     }
@@ -209,7 +193,7 @@ public class PortfolioController {
     @PostMapping("/portfolio/{id}/removePaper")
     public String portfolioPostRemovePaper (@PathVariable("id") Long id, @Validated Long removingPaperId, Model model){
 
-        if (!paperRepository.existsById(removingPaperId)){
+        if (!portfoliosPaperRepository.existsById(removingPaperId)){
             return "redirect:/portfolio/{id}";
         }
 
@@ -217,14 +201,12 @@ public class PortfolioController {
             return "redirect:/portfolios";
         }
 
-        Paper paper = paperRepository.findById(removingPaperId).orElseThrow();
+        PortfoliosPaper paper = portfoliosPaperRepository.findById(removingPaperId).get();
         Portfolio portfolio = portfolioRepository.findById(id).orElseThrow();
-        paper.removePortfolio(portfolio);
+
+        portfolio.removePaper(paper);
 
         portfolioRepository.save(portfolio);
-        paperRepository.save(paper);
-
-//        return portfolio(id, model);
         return "redirect:/portfolio/{id}";
     }
 
