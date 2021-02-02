@@ -78,42 +78,45 @@ public class PortfolioController {
         }
 
         Optional<Paper> paper = paperRepository.findById(id);
-        ArrayList<Paper> res = new ArrayList<>();
-        paper.ifPresent(res::add);
         //todo получать тек цены
-        model.addAttribute("paper", res);
+        model.addAttribute("paper", paper.get());
         return "paper/paper-details";
     }
 
     @GetMapping("/paper/{id}/edit")
-    public String paperEdit(@PathVariable("id") Long id, Model model){
+    public String paperEdit(@ModelAttribute("paper") Paper paper, Model model){
+
+        Long id = paper.getId();
 
         if (!paperRepository.existsById(id)){
             return "redirect:/papers";
         }
 
-        Optional<Paper> paper = paperRepository.findById(id);
-        ArrayList<Paper> res = new ArrayList<>();
-        paper.ifPresent(res::add);
-        model.addAttribute("paper", res);
+        Optional<Paper> paperDB = paperRepository.findById(id);
+        model.addAttribute("paper", paperDB.get());
         model.addAttribute("types", PaperTypes.values());
         model.addAttribute("currency", PaperCurrency.values());
         return "paper/paper-edit";
     }
 
     @PostMapping("/paper/{id}/edit")
-    public String paperPostUpdate (@RequestParam String name, @RequestParam String ticker,
-                                   @RequestParam PaperTypes type, @RequestParam PaperCurrency currency,
-                                   @PathVariable("id") Long id, Model model){
+    public String paperPostUpdate (@ModelAttribute("paper") @Valid Paper paper,
+                                   BindingResult bindingResult, Model model){
 
+        if (bindingResult.hasErrors()){
+            model.addAttribute("paper", paper);
+            model.addAttribute("types", PaperTypes.values());
+            model.addAttribute("currency", PaperCurrency.values());
+            return "paper/paper-edit";
+        }
 
-        Paper paper = paperRepository.findById(id).orElseThrow();
-        paper.setName(name);
-        paper.setTicker(ticker);
-        paper.setType(type);
-        paper.setCurrency(currency);
+        Paper editingPaper = paperRepository.findById(paper.getId()).orElseThrow();
+        editingPaper.setName(paper.getName());
+        editingPaper.setTicker(paper.getTicker());
+        editingPaper.setType(paper.getType());
+        editingPaper.setCurrency(paper.getCurrency());
 
-        paperRepository.save(paper);
+        paperRepository.save(editingPaper);
         return "redirect:/papers";
     }
 
@@ -121,7 +124,11 @@ public class PortfolioController {
     public String paperPostDelete (@PathVariable("id") Long id, Model model){
 
         Paper paper = paperRepository.findById(id).orElseThrow();
-        paperRepository.delete(paper);
+        try {
+            paperRepository.delete(paper);
+        }catch (Exception e){
+            //todo отправить пользователю сообщение о не возможности удаления
+        }
 
         return "redirect:/papers";
     }

@@ -13,33 +13,28 @@
 <div class="container mt-5 mb-5">
     <h1>New paper</h1>
     <div>
-<!--        <form action="/paper/add" method="post">-->
         <form th:method="POST" th:action="@{/paper/add}" th:object="${paper}">
-<!--            <input type="text" name="name" placeholder="Input name." class="form-control">-->
             <input type="text" placeholder="Input name." class="form-control" id="name" th:field="*{name}">
-            <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
+            <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Input name</div>
             <br>
-            <input type="text" name="ticker" placeholder="Input ticker." class="form-control">
+            <input type="text" name="ticker" placeholder="Input ticker." class="form-control" id="ticker" th:field="*{ticker}">
+            <div style="color:red" th:if="${#fields.hasErrors('ticker')}" th:errors="*{ticker}">Input ticker</div>
             <br>
             <div>
                 <select class="form-select" name="type" required="" placeholder="Input type.">
-                    <div th:each="el_t : ${types}" class="alert alert-info mt-2">
-                        <option th:text="${el_t.name()}"></option>
+                    <div th:each="paperType : ${types}" class="alert alert-info mt-2">
+                        <option th:text="${paperType.name()}"></option>
                     </div>
                 </select>
             </div>
             <br>
             <div>
                 <select class="form-select" name="currency" required="" placeholder="Input currency.">
-                    <div th:each="el_cur : ${currency}" class="alert alert-info mt-2">
-                        <option th:text="${el_cur.name()}"></option>
+                    <div th:each="paperCurrency : ${currency}" class="alert alert-info mt-2">
+                        <option th:text="${paperCurrency.name()}"></option>
                     </div>
                 </select>
             </div>
-<!--            <br>-->
-<!--            <input type="number" step=0.01 name="purchasePrice" placeholder="Input purchase price." class="form-control">-->
-<!--            <br>-->
-<!--            <input type="datetime-local" name="purchaseDateStr" placeholder="Input purchase date." class="form-control">-->
             <br>
             <button class="w-100 btn btn-primary btn-lg" type="submit">Add</button>
         </form>

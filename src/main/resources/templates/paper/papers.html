@@ -23,7 +23,6 @@
         <th>Name</th>
         <th>Type</th>
         <th>Currency</th>
-<!--        <th>Purchase price</th>-->
         <th>Current price</th>
         <th>View</th>
     </tr>
@@ -34,7 +33,6 @@
             <td th:text="${el.getName()}"></td>
             <td th:text="${el.getType()}"></td>
             <td th:text="${el.getCurrency()}"></td>
-<!--            <td th:text="${el.getPurchasePrice()}"></td>-->
             <td th:text="${el.getCurrentPrice()}" id="currentprice"></td>
             <td>
                 <a th:href="@{/paper/{id}(id=${el.getId()})}">view</a>
@@ -43,8 +41,8 @@
         </tbody>
     </table>
  </body>
-<script>
-    document.getElementById("currentprice").innerText=Math.random();
-    setTimeout(() => window.location.reload(true), 1000);
-</script>
+<!--<script>-->
+<!--    document.getElementById("currentprice").innerText=Math.random();-->
+<!--    setTimeout(() => window.location.reload(true), 1000);-->
+<!--</script>-->
  </html>

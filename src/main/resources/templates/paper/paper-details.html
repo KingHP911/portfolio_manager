@@ -10,17 +10,15 @@
         <hr class="my-4">
 
         <div class="container mt-5">
-            <div th:each="el : ${paper}" class="alert alert-info mt-2">
-                <h1 th:text="${el.getName()}"></h1>
-                <p th:text="${el.getTicker()}"></p>
-                <p th:text="${el.getType()}"></p>
-                <p th:text="${el.getCurrency()}"></p>
-<!--                <p th:text="${el.getPurchasePrice()}"></p>-->
-<!--                <p th:text="${el.getPurchaseDate()}"></p>-->
-                <p th:text="${el.getCurrentPrice()}"></p>
-                <a th:href="@{/paper/{id}/edit(id=${el.getId()})}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <div class="alert alert-info mt-2">
+                <h1 th:text="${paper.getName()}"></h1>
+                <p th:text="${paper.getTicker()}"></p>
+                <p th:text="${paper.getType()}"></p>
+                <p th:text="${paper.getCurrency()}"></p>
+                <p th:text="${paper.getCurrentPrice()}"></p>
+                <a th:href="@{/paper/{id}/edit(id=${paper.getId()})}" class="btn btn-sm btn-outline-secondary">Edit</a>
                 <p>
-                    <form th:action="@{/paper/{id}/remove(id=${el.getId()})}" method="post">
+                    <form th:action="@{/paper/{id}/remove(id=${paper.getId()})}" method="post">
                         <button class="btn btn-sm btn-outline-secondary" type="submit">Remove</button>
                     </form>
                 </p>
