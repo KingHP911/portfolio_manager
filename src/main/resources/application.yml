@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${db_url}/portfolio_manager_db
+    username: ${db_user}
+    password: ${db_password}
+    driver-class: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show_sql: true
+
+fhtoken: ${fh_token}
