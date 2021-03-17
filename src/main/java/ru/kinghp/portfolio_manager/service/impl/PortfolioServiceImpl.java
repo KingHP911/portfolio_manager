@@ -8,6 +8,8 @@ import ru.kinghp.portfolio_manager.models.Portfolio;
 import ru.kinghp.portfolio_manager.models.PortfoliosPaper;
 import ru.kinghp.portfolio_manager.repository.PortfolioRepository;
 import ru.kinghp.portfolio_manager.repository.PortfoliosPaperRepository;
+import ru.kinghp.portfolio_manager.service.FinnHubService;
+import ru.kinghp.portfolio_manager.service.PaperService;
 import ru.kinghp.portfolio_manager.service.PortfolioService;
 
 import javax.validation.constraints.NotNull;
@@ -24,8 +26,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     //инжектит через @Data не через @Autowired
     private final PortfolioRepository portfolioRepository;
     private final PortfoliosPaperRepository portfoliosPaperRepository;
-    private final PaperServiceImpl paperService;
-    private final FinnHubServiceImpl finnHubService;
+    private final PaperService paperService;
+    private final FinnHubService finnHubService;
 
     @Override
     @Transactional(readOnly = true)
