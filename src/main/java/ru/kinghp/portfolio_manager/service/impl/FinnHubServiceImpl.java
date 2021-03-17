@@ -4,12 +4,15 @@ import com.github.oscerd.finnhub.client.FinnhubClient;
 import com.github.oscerd.finnhub.model.Quote;
 import lombok.Data;
 import org.apache.http.client.ClientProtocolException;
+import org.springframework.stereotype.Service;
+import ru.kinghp.portfolio_manager.service.FinnHubService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 
 @Data
-public class FinnHubServiceImpl {
+@Service
+public class FinnHubServiceImpl implements FinnHubService {
 
     private final FinnhubClient client;
 
