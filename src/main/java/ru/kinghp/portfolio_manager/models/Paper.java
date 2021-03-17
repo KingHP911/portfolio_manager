@@ -12,14 +12,14 @@ public class Paper {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    Long id;
+    private Long id;
 
     @NotBlank
-    String name;
+    private String name;
     @NotBlank
-    String ticker;
-    PaperTypes type;
-    PaperCurrency currency;
-    BigDecimal currentPrice;
+    private String ticker;
+    private PaperTypes type;
+    private PaperCurrency currency;
+    private BigDecimal currentPrice;
 
 }

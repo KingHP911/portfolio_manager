@@ -14,36 +14,19 @@ public class PortfoliosPaper{
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    Long id;
+    private Long id;
 
-    @NotBlank
-    String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    Paper paper;
-
-    BigDecimal currentPrice;
-    BigDecimal purchasePrice;
-    LocalDateTime purchaseDate;
-    Integer vol;
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    Portfolio portfolio;
+    private Paper paper;
 
+    private BigDecimal currentPrice;
+    private BigDecimal purchasePrice;
+    private LocalDateTime purchaseDate;
+    private Integer vol;
 
-    public PortfoliosPaper(Paper paper, BigDecimal purchasePrice, LocalDateTime purchaseDate,
-                           Integer vol) {
-        this.paper = paper;
-        this.name = paper.getName();
-
-        this.purchasePrice = purchasePrice;
-        this.purchaseDate = purchaseDate;
-        this.vol = vol;
-    }
-
-    public PortfoliosPaper() {
-       
-    }
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Portfolio portfolio;
 
 }
