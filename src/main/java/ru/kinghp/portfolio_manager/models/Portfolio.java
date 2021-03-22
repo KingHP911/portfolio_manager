@@ -21,4 +21,6 @@ public class Portfolio {
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfoliosPaper> papers = new ArrayList<>();
 
+    private String ownerName;
+
 }

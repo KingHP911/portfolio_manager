@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kinghp.portfolio_manager.models.*;
+import ru.kinghp.portfolio_manager.service.impl.DBUserServiceImpl;
 import ru.kinghp.portfolio_manager.service.impl.PaperServiceImpl;
 import ru.kinghp.portfolio_manager.service.impl.PortfolioServiceImpl;
 import ru.kinghp.portfolio_manager.service.impl.PortfoliosPaperServiceImpl;
@@ -22,6 +23,35 @@ public class PortfolioController {
     private final PaperServiceImpl paperService;
     private final PortfolioServiceImpl portfolioService;
     private final PortfoliosPaperServiceImpl portfoliosPaperService;
+    private final DBUserServiceImpl userService;
+
+
+    @GetMapping("/login")
+    public String login(@ModelAttribute("user") DBUser user, Model model) {
+        return "login";
+    }
+
+    @GetMapping("/registration")
+    public String registration(@ModelAttribute("user") DBUser user, Model model) {
+        return "registration";
+    }
+
+    @PostMapping("/registration")
+    public String registrationPost (@ModelAttribute("user") @Valid DBUser user,
+                                BindingResult bindingResult, Model model){
+
+        if (bindingResult.hasErrors()){
+            return "registration";
+        }
+        //todo реализовать корректный фронт
+        if (!user.getPassword().equals(user.getPasswordConfirm())){
+            model.addAttribute("passwordConfirmError", true);
+            return "registration";
+        }
+
+        userService.add(user);
+        return "redirect:/login";
+    }
 
     @GetMapping("/papers")
     public String papers (Model model){
@@ -108,7 +138,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/portfolio/add")
-    public String portfolioAdd (Model model){
+    public String portfolioAdd (@ModelAttribute("portfolio") Portfolio portfolio, Model model){
         return "portfolio/portfolio-add";
     }
 

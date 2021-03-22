@@ -1,6 +1,9 @@
 package ru.kinghp.portfolio_manager.service.impl;
 
 import lombok.Data;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kinghp.portfolio_manager.models.Paper;
@@ -31,12 +34,16 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     @Transactional(readOnly = true)
+    @PostFilter("hasRole('ADMIN') or filterObject.ownerName == authentication.name")
     public Iterable<Portfolio> findAll() {
         return portfolioRepository.findAll();
     }
 
     @Override
     public Portfolio add(Portfolio portfolio) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        portfolio.setOwnerName(auth.getName());
         return portfolioRepository.save(portfolio);
     }
 
