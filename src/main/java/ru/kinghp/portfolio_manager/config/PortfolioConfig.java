@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import ru.kinghp.portfolio_manager.models.FinnHubData;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.kinghp.portfolio_manager.service.impl.FinnHubServiceImpl;
 
 @Configuration
 @ComponentScan("ru.kinghp.portfolio_manager")
@@ -20,9 +22,14 @@ public class PortfolioConfig {
     }
 
     @Bean
-    public FinnHubData finnHubData(FinnhubClient finnhubClient){
-        FinnHubData hubData = new FinnHubData(finnhubClient);
+    public FinnHubServiceImpl finnHubService(FinnhubClient finnhubClient){
+        FinnHubServiceImpl hubData = new FinnHubServiceImpl(finnhubClient);
         return hubData;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new Argon2PasswordEncoder();
     }
 
 }

@@ -1,43 +1,61 @@
 package ru.kinghp.portfolio_manager.controllers;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.kinghp.portfolio_manager.dao.PortfolioRepository;
-import ru.kinghp.portfolio_manager.dao.PortfoliosPaperRepository;
 import ru.kinghp.portfolio_manager.models.*;
-import ru.kinghp.portfolio_manager.dao.PaperRepository;
+import ru.kinghp.portfolio_manager.service.impl.DBUserServiceImpl;
+import ru.kinghp.portfolio_manager.service.impl.PaperServiceImpl;
+import ru.kinghp.portfolio_manager.service.impl.PortfolioServiceImpl;
+import ru.kinghp.portfolio_manager.service.impl.PortfoliosPaperServiceImpl;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 
+@Data
 @Controller
 public class PortfolioController {
 
-    @Autowired
-    private PaperRepository paperRepository;
-    @Autowired
-    private PortfolioRepository portfolioRepository;
-    @Autowired
-    private PortfoliosPaperRepository portfoliosPaperRepository;
-    @Autowired
-    private FinnHubData hubData;
+    private final PaperServiceImpl paperService;
+    private final PortfolioServiceImpl portfolioService;
+    private final PortfoliosPaperServiceImpl portfoliosPaperService;
+    private final DBUserServiceImpl userService;
 
-    @GetMapping("/")
-    public String users (Model model){
-        return "index";
+
+    @GetMapping("/login")
+    public String login(@ModelAttribute("user") DBUser user, Model model) {
+        return "login";
+    }
+
+    @GetMapping("/registration")
+    public String registration(@ModelAttribute("user") DBUser user, Model model) {
+        return "registration";
+    }
+
+    @PostMapping("/registration")
+    public String registrationPost (@ModelAttribute("user") @Valid DBUser user,
+                                BindingResult bindingResult, Model model){
+
+        if (bindingResult.hasErrors()){
+            return "registration";
+        }
+        //todo реализовать корректный фронт
+        if (!user.getPassword().equals(user.getPasswordConfirm())){
+            model.addAttribute("passwordConfirmError", true);
+            return "registration";
+        }
+
+        userService.add(user);
+        return "redirect:/login";
     }
 
     @GetMapping("/papers")
     public String papers (Model model){
-        Iterable<Paper> papers = paperRepository.findAll();
-        //todo переписать hubData.getCurrentPrice(paper.getTicker()) на пакетное получение, тек реализация очень медлено получает тек цены
-        model.addAttribute("papers", papers);
+        model.addAttribute("papers", paperService.findAll());
         return "paper/papers";
     }
 
@@ -55,31 +73,23 @@ public class PortfolioController {
 
         //@Valid проверяет корректность значений
         //BindingResult bindingResult ошибка валидации. Должен быть после валидир-го объекта
-
-        //todo получать тек цену?
         if (bindingResult.hasErrors()){
             model.addAttribute("types", PaperTypes.values());
             model.addAttribute("currency", PaperCurrency.values());
             return "paper/paper-add";
         }
 
-        //todo не добавлять бумаги с уже имеющимися тикерами
-
-        paper.setCurrentPrice(new BigDecimal(0));
-        paperRepository.save(paper);
+        paperService.add(paper);
         return "redirect:/papers";
     }
 
     @GetMapping("/paper/{id}")
     public String paper(@PathVariable("id") Long id, Model model){
 
-        if (!paperRepository.existsById(id)){
+        if (!paperService.existsById(id)){
             return "redirect:/papers";
         }
-
-        Optional<Paper> paper = paperRepository.findById(id);
-        //todo получать тек цены
-        model.addAttribute("paper", paper.get());
+        model.addAttribute("paper", paperService.findById(id).get());
         return "paper/paper-details";
     }
 
@@ -88,12 +98,12 @@ public class PortfolioController {
 
         Long id = paper.getId();
 
-        if (!paperRepository.existsById(id)){
+        if (!paperService.existsById(id)){
             return "redirect:/papers";
         }
 
-        Optional<Paper> paperDB = paperRepository.findById(id);
-        model.addAttribute("paper", paperDB.get());
+        model.addAttribute("paper", paperService.findById(id).get());
+
         model.addAttribute("types", PaperTypes.values());
         model.addAttribute("currency", PaperCurrency.values());
         return "paper/paper-edit";
@@ -110,110 +120,86 @@ public class PortfolioController {
             return "paper/paper-edit";
         }
 
-        Paper editingPaper = paperRepository.findById(paper.getId()).orElseThrow();
-        editingPaper.setName(paper.getName());
-        editingPaper.setTicker(paper.getTicker());
-        editingPaper.setType(paper.getType());
-        editingPaper.setCurrency(paper.getCurrency());
-
-        paperRepository.save(editingPaper);
+        paperService.update(paper);
         return "redirect:/papers";
     }
 
     @PostMapping("/paper/{id}/remove")
     public String paperPostDelete (@PathVariable("id") Long id, Model model){
-
-        Paper paper = paperRepository.findById(id).orElseThrow();
-        try {
-            paperRepository.delete(paper);
-        }catch (Exception e){
-            //todo отправить пользователю сообщение о не возможности удаления
-        }
-
+        paperService.deleteById(id);
         return "redirect:/papers";
     }
 
 
     @GetMapping("/portfolios")
     public String portfolios (Model model){
-        Iterable<Portfolio> portfolios = portfolioRepository.findAll();
-        model.addAttribute("portfolios", portfolios);
+        model.addAttribute("portfolios", portfolioService.findAll());
         return "portfolio/portfolios";
     }
 
     @GetMapping("/portfolio/add")
-    public String portfolioAdd (Model model){
+    public String portfolioAdd (@ModelAttribute("portfolio") Portfolio portfolio, Model model){
         return "portfolio/portfolio-add";
     }
 
     @PostMapping("/portfolio/add")
-    public String portfolioPostAdd (@RequestParam String name, Model model){
+    public String portfolioPostAdd (@ModelAttribute("portfolio") @Valid Portfolio portfolio,
+                                    BindingResult bindingResult, Model model){
 
-        Portfolio portfolio = new Portfolio(name);
-        portfolioRepository.save(portfolio);
+        if (bindingResult.hasErrors()){
+           return "portfolio/portfolio-add";
+        }
+
+        portfolioService.add(portfolio);
         return "redirect:/portfolios";
     }
 
     @GetMapping("/portfolio/{id}")
-    public String portfolio(@PathVariable("id") Long id, Model model){
+    public String portfolio(@PathVariable("id") Long id, @ModelAttribute("portfoliosPaper") PortfoliosPaper portfoliosPaper, Model model){
 
         //todo валидация форм
-        if (!portfolioRepository.existsById(id)){
+        if (!portfolioService.existsById(id)){
             return "redirect:/portfolios";
         }
 
-        Portfolio portfolio = portfolioRepository.findById(id).get();
+        Portfolio portfolio = portfolioService.findById(id).get();
         model.addAttribute("portfolio", portfolio);
 
-        List<PortfoliosPaper> papersInPort = portfolio.getPapers();
-        model.addAttribute("papers", papersInPort);
+        List<PortfoliosPaper> portfoliosPapers = portfolio.getPapers();
+        model.addAttribute("papers", portfoliosPapers);
 
-        Iterable<Paper> allPapers = paperRepository.findAll();
+        Iterable<Paper> allPapers = paperService.findAll();
         model.addAttribute("allPapers", allPapers);
 
         return "portfolio/portfolio-details";
     }
 
     @PostMapping("/portfolio/{id}/addPaper")
-    public String portfolioPostAddPaper (@PathVariable("id") Long id, @Validated Long addingPaperId,
-                                         @RequestParam Integer vol, Model model){
+    public String portfolioPostAddPaper (@PathVariable("id") Long portfolioId, @Validated Long addingPaperId, @RequestParam Integer vol,
+                                         @ModelAttribute("portfoliosPaper") PortfoliosPaper portfoliosPaper, Model model){
 
-        if (!paperRepository.existsById(addingPaperId)){
+        if (!paperService.existsById(addingPaperId)){
             return "redirect:/portfolio/{id}";
         }
-
-        if (!portfolioRepository.existsById(id)){
+        if (!portfolioService.existsById(portfolioId)){
             return "redirect:/portfolios";
         }
 
-        Paper paper = paperRepository.findById(addingPaperId).get();
-        Portfolio portfolio = portfolioRepository.findById(id).get();
-        PortfoliosPaper portfoliosPaper = new PortfoliosPaper(paper, new BigDecimal(0), LocalDateTime.now(), vol);
-        portfoliosPaper.setPurchasePrice(hubData.getCurrentPrice(paper.getTicker()));
-        portfolio.addPaper(portfoliosPaper);
-
-        portfolioRepository.save(portfolio);
-
+        portfolioService.addPaper(portfolioId, addingPaperId, portfoliosPaper, vol);
         return "redirect:/portfolio/{id}";
     }
 
     @PostMapping("/portfolio/{id}/removePaper")
-    public String portfolioPostRemovePaper (@PathVariable("id") Long id, @Validated Long removingPaperId, Model model){
+    public String portfolioPostRemovePaper (@PathVariable("id") Long portfolioId, @Validated Long removingPaperId, Model model){
 
-        if (!portfoliosPaperRepository.existsById(removingPaperId)){
+        if (!portfoliosPaperService.existsById(removingPaperId)){
             return "redirect:/portfolio/{id}";
         }
-
-        if (!portfolioRepository.existsById(id)){
+        if (!portfolioService.existsById(portfolioId)){
             return "redirect:/portfolios";
         }
 
-        PortfoliosPaper paper = portfoliosPaperRepository.findById(removingPaperId).get();
-        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow();
-
-        portfolio.removePaper(paper);
-
-        portfolioRepository.save(portfolio);
+        portfolioService.removePaper(portfolioId, removingPaperId);
         return "redirect:/portfolio/{id}";
     }
 

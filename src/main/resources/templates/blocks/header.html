@@ -13,6 +13,18 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/papers">Papers</a>
                     </li>
+
+
+
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/login">login</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/registration">registration</a>
+                    </li>
+                    <form th:action="@{/logout}" method="post">
+                        <input type="submit" value="Logout" />
+                    </form>
                 </ul>
             </div>
         </div>
