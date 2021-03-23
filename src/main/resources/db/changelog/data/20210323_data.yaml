@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: dbuser_data_create
+      author: kinghp
+      changes:
+          - loadData:
+              columns:
+                - column:
+                    header: C1
+                    name:  id
+                    type:  NUMERIC
+                - column:
+                    header: C2
+                    name: is_admin
+                    type: BOOLEAN
+                - column:
+                    header: C3
+                    name: login
+                    type: STRING
+                - column:
+                    header: C4
+                    name: password
+                    type: STRING
+              commentLineStartsWith: #
+              encoding: UTF-8
+              file: 20210323/dbuser.csv
+              quotchar: '"'
+              separator: ','
+              relativeToChangelogFile: true #путь берем относительно самого файла .yaml
+              tableName: dbuser

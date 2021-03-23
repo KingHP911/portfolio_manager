@@ -1,13 +1,19 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${db_url}/portfolio_manager_db
+    url: jdbc:postgresql://${db_url}/portfolio_manager
     username: ${db_user}
     password: ${db_password}
     driver-class: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
       show_sql: true
+
+  liquibase:
+    enabled: true
+#    change-log: classpath:db/changelog/db.changelog-master.yaml #это путь по умолчанию, можно не указывать
+    contexts: dev #на разных контекстах могут быть выполнены разные сценарии (dev, test)
+
 
 fhtoken: ${fh_token}

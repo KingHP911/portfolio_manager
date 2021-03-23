@@ -1,0 +1,129 @@
+databaseChangeLog:
+  - changeSet:
+      id: dbuser_create
+      author: kinghp
+      changes:
+        - createTable:
+            tableName: dbuser
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: dbuser_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: is_admin
+                  type: BOOLEAN
+              - column:
+                  name: login
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+  - changeSet:
+      id: paper_create
+      author: kinghp
+      changes:
+        - createTable:
+            tableName: paper
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: paper_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: currency
+                  type: INTEGER
+              - column:
+                  name: current_price
+                  type: NUMERIC(19,2)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: ticker
+                  type: VARCHAR(255)
+              - column:
+                  name: type
+                  type: INTEGER
+  - changeSet:
+      id: portfolio_create
+      author: kinghp
+      changes:
+        - createTable:
+            tableName: portfolio
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: portfolio_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: owner_name
+                  type: VARCHAR(255)
+  - changeSet:
+      id: portfolios_paper_create
+      author: kinghp
+      changes:
+        - createTable:
+            tableName: portfolios_paper
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: portfolios_paper_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: current_price
+                  type: NUMERIC(19,2)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: purchase_date
+                  type: TIMESTAMP
+              - column:
+                  name: purchase_price
+                  type: NUMERIC(19,2)
+              - column:
+                  name: vol
+                  type: INTEGER
+              - column:
+                  name: paper_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: paper_id
+                    references: paper(id)
+              - column:
+                  name: portfolio_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: portfolio_id
+                    references: portfolio(id)
+  - changeSet:
+      id: sequence_create
+      author: kinghp
+      changes:
+        - createSequence:
+            cacheSize:  10000
+            cycle:  true
+            dataType: bigint
+            incrementBy: 1
+            maxValue: 9223372036854775807
+            minValue: 1
+            sequenceName: hibernate_sequence
+            startValue: 1
