@@ -1,0 +1,3 @@
+id,is_admin,login,password
+8146,true,Admin,"$argon2id$v=19$m=4096,t=3,p=1$jn+5NyYCs/WKaANMS+x0lw$mIit/YLrKB+qqSov8SfSUo3TAdwtntUkig9Oo5tKqZ0"
+8147,false,User,"$argon2id$v=19$m=4096,t=3,p=1$WGQ/WL0ze8oLDEOZPY0RWA$KykWWeR3mDt1o66GEW3cyE73cbFelFmedgz7j7HVOB8"
