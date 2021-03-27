@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: news_create
+      author: kinghp
+      changes:
+        - createTable:
+            tableName: news
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: news_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: brief_dis
+                  type: VARCHAR(500)
+              - column:
+                  name: full_dis
+                  type: VARCHAR(5000)
+              - column:
+                  name: img_ref
+                  type: VARCHAR(255)
+              - column:
+                  name: is_viewed
+                  type: BOOLEAN
+              - column:
+                  name: valid_until
+                  type: TIMESTAMP
