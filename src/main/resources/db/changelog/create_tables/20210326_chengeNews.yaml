@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumns-News
+      author: kinghp
+      changes:
+        - addColumn:
+            tableName: news
+            columns:
+              - column:
+                  name: f_button_name
+                  type: varchar(100)
+              - column:
+                  name: f_button_action
+                  type: varchar(200)

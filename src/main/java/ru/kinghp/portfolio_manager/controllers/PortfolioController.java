@@ -1,17 +1,14 @@
 package ru.kinghp.portfolio_manager.controllers;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kinghp.portfolio_manager.models.*;
-import ru.kinghp.portfolio_manager.service.impl.DBUserServiceImpl;
-import ru.kinghp.portfolio_manager.service.impl.PaperServiceImpl;
-import ru.kinghp.portfolio_manager.service.impl.PortfolioServiceImpl;
-import ru.kinghp.portfolio_manager.service.impl.PortfoliosPaperServiceImpl;
+import ru.kinghp.portfolio_manager.service.*;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -20,10 +17,11 @@ import java.util.*;
 @Controller
 public class PortfolioController {
 
-    private final PaperServiceImpl paperService;
-    private final PortfolioServiceImpl portfolioService;
-    private final PortfoliosPaperServiceImpl portfoliosPaperService;
-    private final DBUserServiceImpl userService;
+    private final PaperService paperService;
+    private final PortfolioService portfolioService;
+    private final PortfoliosPaperService portfoliosPaperService;
+    private final DBUserService userService;
+    private final NewsService newsService;
 
 
     @GetMapping("/login")
@@ -56,6 +54,7 @@ public class PortfolioController {
     @GetMapping("/papers")
     public String papers (Model model){
         model.addAttribute("papers", paperService.findAll());
+        model.addAttribute("news", newsService.findAllNotViewed());
         return "paper/papers";
     }
 

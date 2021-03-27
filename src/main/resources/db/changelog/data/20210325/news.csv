@@ -1,0 +1,8 @@
+id,title,brief_dis,full_dis,img_ref,is_viewed,valid_until
+1,title1,brief_dis1,full_dis1,img_ref1,false,2021-03-20 00:00:00.000000
+2,title2,brief_dis2,full_dis2,img_ref2,false,2021-03-20 00:00:00.000000
+3,title3,brief_dis3,full_dis3,img_ref3,false,2021-03-25 00:00:00.000000
+4,title4,brief_dis4,full_dis4,img_ref4,false,2021-03-30 00:00:00.000000
+5,title5,brief_dis5,full_dis5,img_ref5,false,2021-03-30 00:00:00.000000
+6,title6,brief_dis6,full_dis6,img_ref6,false,2021-03-30 00:00:00.000000
+7,title7,brief_dis7,full_dis7,img_ref7,false,2021-03-30 00:00:00.000000
