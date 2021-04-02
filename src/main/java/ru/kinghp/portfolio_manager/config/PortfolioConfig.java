@@ -1,6 +1,7 @@
 package ru.kinghp.portfolio_manager.config;
 
 import com.github.oscerd.finnhub.client.FinnhubClient;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,6 +31,11 @@ public class PortfolioConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new Argon2PasswordEncoder();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
 }

@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_DBUser_Column-News
+      author: kinghp
+      changes:
+        - addColumn:
+            tableName: news
+            columns:
+              - column:
+                  name: db_user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: dbuser_id
+                    references: dbuser(id)

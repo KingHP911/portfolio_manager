@@ -19,7 +19,6 @@ public class DBUser {
     private Boolean isAdmin = false;
 
     @Transient
-
     private String passwordConfirm;
 
 }

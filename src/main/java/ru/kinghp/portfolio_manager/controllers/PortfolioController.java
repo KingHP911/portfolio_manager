@@ -54,7 +54,7 @@ public class PortfolioController {
     @GetMapping("/papers")
     public String papers (Model model){
         model.addAttribute("papers", paperService.findAll());
-        model.addAttribute("news", newsService.findAllNotViewed());
+//        model.addAttribute("news", newsService.findAllNotViewed());
         return "paper/papers";
     }
 
