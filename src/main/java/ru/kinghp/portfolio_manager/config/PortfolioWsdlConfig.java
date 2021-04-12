@@ -29,16 +29,10 @@ public class PortfolioWsdlConfig extends WsConfigurerAdapter {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("PortfolioPort");
         wsdl11Definition.setLocationUri("/ws");
-//        wsdl11Definition.setTargetNamespace("http://ru.kinghp.portfolio_manager.dto.soap");
         wsdl11Definition.setTargetNamespace("http://www.ws.portfolio_manager.kinghp.ru");
         wsdl11Definition.setSchema(portfolioSchema);
         return wsdl11Definition;
     }
-
-//    @Bean
-//    public XsdSchema portfolioSchema() {
-//        return new SimpleXsdSchema(new ClassPathResource("xsd/portfolio._xsd"));
-//    }
 
     @Bean
     public XsdSchema portfolioSchema() {
