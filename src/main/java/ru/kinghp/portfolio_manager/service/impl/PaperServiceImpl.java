@@ -69,6 +69,6 @@ public class PaperServiceImpl implements PaperService {
         }catch (Exception e){
             //todo отправить пользователю сообщение о не возможности удаления
         }
-
     }
+
 }

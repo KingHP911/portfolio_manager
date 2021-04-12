@@ -1,0 +1,230 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.ws.portfolio_manager.kinghp.ru"
+           xmlns:tns="http://www.ws.portfolio_manager.kinghp.ru"
+           elementFormDefault="qualified">
+
+
+
+    <xs:element name="getAllPapersRequest">
+    </xs:element>
+
+    <xs:element name="getAllPapersResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="paperDto" type="tns:paperDto" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="getPaperDetailsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getPaperDetailsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="paperDto" type="tns:paperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="postAddPaperRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="paperDto" type="tns:paperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="postAddPaperResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="paperDto" type="tns:paperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="postPaperUpdateRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="paperDto" type="tns:paperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="postPaperUpdateResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="paperDto" type="tns:paperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="getAllPortfoliosRequest">
+    </xs:element>
+
+    <xs:element name="getAllPortfoliosResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="portfolioDto" type="tns:portfolioDto" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="papersDto" minOccurs="0" maxOccurs="unbounded" type="tns:portfoliosPaperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="postAddPortfolioRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="portfolioDto" type="tns:portfolioDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="postAddPortfolioResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="portfolioDto" type="tns:portfolioDto"/>
+                <xs:element name="papersDto" minOccurs="0" maxOccurs="unbounded" type="tns:portfoliosPaperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="getPortfolioDetailsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getPortfolioDetailsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="portfolioDto" type="tns:portfolioDto"/>
+                <xs:element name="papersDto" minOccurs="0" maxOccurs="unbounded" type="tns:portfoliosPaperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="postPortfolioAddPaperRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="portfolioId" type="xs:long"/>
+                <xs:element name="addingPaperId" type="xs:long"/>
+                <xs:element name="vol" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="postPortfolioAddPaperResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="portfolioDto" type="tns:portfolioDto"/>
+                <xs:element name="papersDto" minOccurs="0" maxOccurs="unbounded" type="tns:portfoliosPaperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="postPortfolioRemovePaperRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="portfolioId" type="xs:long"/>
+                <xs:element name="removingPaperId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="postPortfolioRemovePaperResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="portfolioDto" type="tns:portfolioDto"/>
+                <xs:element name="papersDto" minOccurs="0" maxOccurs="unbounded" type="tns:portfoliosPaperDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+
+    <xs:complexType name="paperDto">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="ticker" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="type" type="tns:paperTypesDto"/>
+            <xs:element name="currency" type="tns:paperCurrencyDto"/>
+            <xs:element name="currentPrice">
+                <xs:simpleType>
+                    <xs:restriction base="xs:decimal">
+                        <xs:totalDigits value="19" />
+                        <xs:fractionDigits value="2" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="paperTypesDto">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="STOCK"/>
+            <xs:enumeration value="BOUNDS"/>
+            <xs:enumeration value="ETF"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="paperCurrencyDto">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="RUB"/>
+            <xs:enumeration value="USD"/>
+            <xs:enumeration value="EUR"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="portfoliosPaperDto">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="paper" type="tns:paperDto"/>
+            <xs:element name="currentPrice">
+                <xs:simpleType>
+                    <xs:restriction base="xs:decimal">
+                        <xs:totalDigits value="19" />
+                        <xs:fractionDigits value="2" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="purchasePrice">
+                <xs:simpleType>
+                    <xs:restriction base="xs:decimal">
+                        <xs:totalDigits value="19" />
+                        <xs:fractionDigits value="2" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="purchaseDate" type="xs:string"/>
+            <xs:element name="vol" type="xs:int"/>
+            <xs:element name="portfolioDto" type="tns:portfolioDto"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="portfolioDto">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="papersDto" minOccurs="0" maxOccurs="unbounded" type="tns:portfoliosPaperDto"/>
+            <xs:element name="ownerName" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

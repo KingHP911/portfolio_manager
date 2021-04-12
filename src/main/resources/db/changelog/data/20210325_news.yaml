@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: news_data_create
+      author: kinghp
+      changes:
+          - loadData:
+              columns:
+                - column:
+                    header: C1
+                    name:  id
+                    type:  NUMERIC
+                - column:
+                    header: C2
+                    name: title
+                    type: STRING
+                - column:
+                    header: C3
+                    name: brief_dis
+                    type: STRING
+                - column:
+                    header: C4
+                    name: full_dis
+                    type: STRING
+                - column:
+                      header: C5
+                      name: img_ref
+                      type: STRING
+                - column:
+                      header: C6
+                      name: is_viewed
+                      type: BOOLEAN
+                - column:
+                      header: C7
+                      name: valid_until
+                      type: TIMESTAMP
+              commentLineStartsWith: #
+              encoding: UTF-8
+              file: 20210325/news.csv
+              quotchar: '"'
+              separator: ','
+              relativeToChangelogFile: true #путь берем относительно самого файла .yaml
+              tableName: news

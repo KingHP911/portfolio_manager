@@ -18,7 +18,7 @@ public class PortfoliosPaper{
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Paper paper;
 
     private BigDecimal currentPrice;
