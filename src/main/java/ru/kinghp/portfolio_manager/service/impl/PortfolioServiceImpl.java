@@ -67,10 +67,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 
         portfoliosPaper.setName(paper.getName());
         portfoliosPaper.setPaper(paper);
-        portfoliosPaper.setPurchasePrice(new BigDecimal(0));
+        portfoliosPaper.setPurchasePrice(finnHubService.getCurrentPrice(paper.getTicker()));
         portfoliosPaper.setPurchaseDate(LocalDateTime.now());
         portfoliosPaper.setVol(vol);
-        portfoliosPaper.setPurchasePrice(finnHubService.getCurrentPrice(paper.getTicker()));
 
         //todo м.б. вынести в отдельный метод
         List<PortfoliosPaper> papers = portfolio.getPapers();
@@ -95,6 +94,6 @@ public class PortfolioServiceImpl implements PortfolioService {
         paper.setPortfolio(null);
 
         return portfolioRepository.save(portfolio);
-
     }
+
 }

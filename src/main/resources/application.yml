@@ -25,3 +25,7 @@ jwt:
 server:
   error:
     include-message: always
+
+#Для плагина maven для создания классов из xsd
+project:
+  basedir: D:/Java/portfolio_manager

@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
+import org.springframework.xml.xsd.SimpleXsdSchema;
+import org.springframework.xml.xsd.XsdSchema;
 import ru.kinghp.portfolio_manager.service.impl.FinnHubServiceImpl;
 
 @Configuration
@@ -37,5 +41,4 @@ public class PortfolioConfig {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
 }

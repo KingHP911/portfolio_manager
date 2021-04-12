@@ -18,7 +18,7 @@ public class Portfolio {
     @NotBlank
     private String name;
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PortfoliosPaper> papers = new ArrayList<>();
 
     private String ownerName;
